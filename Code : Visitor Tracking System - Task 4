@@ -1,0 +1,35 @@
+const int PIR1_PIN = 2;
+const int PIR2_PIN = 3;
+
+int visitors = 0;
+int lastRIPdetected = 0;
+bool b_PIR1_active = false;
+
+void setup() {
+  pinMode(PIR1_PIN, INPUT);  // Configure PIR1 pin as input
+  pinMode(PIR2_PIN, INPUT);  // Configure PIR2 pin as input
+  Serial.begin(9600);  // Initialize serial communication
+  Serial.println("Visitors are welcome");  // Print welcome message
+}
+
+void loop() {
+  // Check if PIR1 detects motion
+  if (digitalRead(PIR1_PIN) == HIGH) {
+    // If PIR1 is not active and no previous detection
+    if (!b_PIR1_active && lastRIPdetected == 0) {
+      b_PIR1_active = true;  // Set PIR1 active
+      lastRIPdetected = 1;   // Set last detection to PIR1
+      Serial.println("Visit started");  // Print visit start message
+    }
+  } else {
+    b_PIR1_active = false;  // Reset PIR1 activity
+    if (lastRIPdetected == 1) lastRIPdetected = 2;  // Set detection to PIR2
+  }
+
+  // If PIR1 was crossed and PIR2 detects motion
+  if (lastRIPdetected == 2 && digitalRead(PIR2_PIN) == HIGH) {
+    visitors++;  // Increment visitor count
+    lastRIPdetected = 0;  // Reset last detection
+    Serial.println("Visitor entered. Visitors: " + String(visitors));  // Print visitor count
+  }
+}
