@@ -1,3 +1,4 @@
+#C++ Coding 
 const int PIR1_PIN = 2;
 const int PIR2_PIN = 3;
 
